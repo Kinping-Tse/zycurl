@@ -17,7 +17,9 @@ ZEND_TSRMLS_CACHE_EXTERN()
 #include "zend_smart_str.h"
 
 #define ZYCURL_PERSISTENT 1
+#define ZYCURL_NOT_PERSISTENT 0
 #define ZYCURL_P ZYCURL_PERSISTENT
+#define ZYCURL_NP ZYCURL_NOT_PERSISTENT
 
 #define ZYCURL_INLINE zend_always_inline
 #define ZYCURL_MODULE_NAME "zycurl"
@@ -25,6 +27,8 @@ ZEND_TSRMLS_CACHE_EXTERN()
 #define ZYCURL_IFN ZYCURL_INNER_FUNC_N
 #define ZYCURL_INNER_FUNC_D(name, return_type) static return_type ZYCURL_IFN(name)
 #define ZYCURL_IFD ZYCURL_INNER_FUNC_D
+
+#define ZYCURL_DTOR_FUNC_D(name) ZYCURL_INNER_FUNC_D(name, void)(zval *pDest)
 
 typedef struct {
     smart_str buf;
@@ -40,10 +44,15 @@ typedef struct {
 } php_zycurl_error;
 
 typedef struct {
+    HashTable *slist;
+} php_zycurl_free;
+
+typedef struct {
     CURL                *curl;
     zend_bool           is_recycle;
     php_zycurl_error    err;
     php_zycurl_handlers *handlers;
+    php_zycurl_free     *to_free;
 } php_zycurl;
 
 #endif	/* PHP_ZYCURL_H */
