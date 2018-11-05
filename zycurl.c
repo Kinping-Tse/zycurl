@@ -45,7 +45,7 @@ PHP_FUNCTION(zycurl_init)
 
 	php_zycurl* pc = ZYCURL_IFN(curl_init)(url);
 	if (!pc) {
-		ZYCURL_IFN(pr_error)("Could not initialize a new ZYcURL handle");
+		ZYCURL_IFN(pr_error)("Could not initialize a new ZYcURL handle", NULL);
 		RETURN_FALSE;
 	}
 
@@ -69,12 +69,12 @@ PHP_FUNCTION(zycurl_setopt)
 
 	php_zycurl *pc;
 	if ((pc = ZYCURL_IFN(get_php_curl)(res)) == NULL) {
-		ZYCURL_IFN(pr_error("Invalid curl resource"));
+		ZYCURL_IFN(pr_error("Invalid curl resource", NULL));
 		RETURN_FALSE;
 	}
 
 	if (opt_name <= 0) {
-		ZYCURL_IFN(pr_error)("Invalid curl configuration option");
+		ZYCURL_IFN(pr_error)("Invalid curl configuration option", NULL);
 		RETURN_FALSE;
 	}
 
@@ -110,7 +110,7 @@ PHP_FUNCTION(zycurl_setopt_array)
 
 	ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(options), opt_name, opt_name_str, opt_value) {
 		if (opt_name_str) {
-			ZYCURL_IFN(pr_error)("Array keys must be CURLOPT constants or equivalent integer values");
+			ZYCURL_IFN(pr_error)("Array keys must be CURLOPT constants or equivalent integer values", NULL);
 			RETURN_FALSE;
 		}
 		if (ZYCURL_IFN(curl_setopt)(pc, opt_name, opt_value) == FAILURE) {
@@ -134,7 +134,7 @@ PHP_FUNCTION(zycurl_exec)
 
 	php_zycurl *pc = NULL;
 	if ((pc = ZYCURL_IFN(get_php_curl)(res)) == NULL) {
-		ZYCURL_IFN(pr_error)("Invalid curl resource");
+		ZYCURL_IFN(pr_error)("Invalid curl resource", NULL);
 		RETURN_FALSE;
 	}
 
@@ -223,7 +223,7 @@ PHP_FUNCTION(zycurl_getinfo)
 			break;
 		}
 		default:
-			ZYCURL_IFN(pr_error)("Invalid curl info option");
+			ZYCURL_IFN(pr_error)("Invalid curl info option", NULL);
 			break;
 	}
 
@@ -429,7 +429,7 @@ ZYCURL_IFD(pr_error, void)(char *errmsg, ...)
 	va_list vl;
 	va_start(vl, errmsg);
 	int tmp_level = va_arg(vl, int);
-	if (tmp_level >= 0) {
+	if (tmp_level > 0) {
 		level = tmp_level;
 	}
 	va_end(vl);
@@ -486,6 +486,11 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 			zend_string *val = NULL;
 			HashTable* ph = HASH_OF(opt_value);
 
+			if (!ph) {
+				ZYCURL_IFN(pr_error)("You must pass an array as argument", NULL);
+				return FAILURE;
+			}
+
 			ZEND_HASH_FOREACH_VAL(ph, current) {
 				ZVAL_DEREF(current);
 				val = zval_get_string(current);
@@ -493,7 +498,7 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 				zend_string_release(val);
 
 				if (!slist) {
-					ZYCURL_IFN(pr_error)("Could not build curl_slist");
+					ZYCURL_IFN(pr_error)("Could not build curl_slist", NULL);
 					return FAILURE;
 				}
 			} ZEND_HASH_FOREACH_END();
@@ -504,7 +509,7 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 			break;
 		}
 		default:
-			ZYCURL_IFN(pr_error)("Unsupported curl configuration option");
+			ZYCURL_IFN(pr_error)("Unsupported curl configuration option", NULL);
 			return FAILURE;
 	}
 	pc->err.no = err_code;
