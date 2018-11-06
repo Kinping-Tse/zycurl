@@ -6,6 +6,7 @@ ZYcURL 是一个类似于官方PHP的curl扩展, 不过其实现了资源的常�
 
 * PHP 7.0+
 * Linux, OS X, (Other unix system) ...
+* curl PHP扩展的预安装
 
 ## Installation
 

@@ -6,7 +6,7 @@
 extern zend_module_entry zycurl_module_entry;
 # define phpext_zycurl_ptr &zycurl_module_entry
 
-# define PHP_ZYCURL_VERSION "1.0.0"
+# define PHP_ZYCURL_VERSION "0.1.0"
 
 # if defined(ZTS) && defined(COMPILE_DL_ZYCURL)
 ZEND_TSRMLS_CACHE_EXTERN()
@@ -29,6 +29,23 @@ ZEND_TSRMLS_CACHE_EXTERN()
 #define ZYCURL_IFD ZYCURL_INNER_FUNC_D
 
 #define ZYCURL_DTOR_FUNC_D(name) ZYCURL_INNER_FUNC_D(name, void)(zval *pDest)
+
+/* Fixed ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO macro */
+#if PHP_VERSION_ID < 70200
+
+#define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null) \
+    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, NULL, allow_null)
+#define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, NULL, allow_null)
+
+#else
+
+#define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null) \
+    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null)
+#define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null)
+
+#endif
 
 typedef struct {
     smart_str buf;
