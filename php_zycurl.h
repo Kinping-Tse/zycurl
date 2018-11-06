@@ -32,44 +32,39 @@ ZEND_TSRMLS_CACHE_EXTERN()
 
 /* Fixed ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO macro */
 #if PHP_VERSION_ID < 70200
-
-#define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null) \
-    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, NULL, allow_null)
-#define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
-    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, NULL, allow_null)
-
+# define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null) \ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, NULL, allow_null)
+# define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+	ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, NULL, allow_null)
 #else
-
-#define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null) \
-    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null)
-#define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
-    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null)
-
+# define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null) \
+	ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null)
+# define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+	ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null)
 #endif
 
 typedef struct {
-    smart_str buf;
+	smart_str buf;
 } php_zycurl_write;
 
 typedef struct {
-    php_zycurl_write *write;
+	php_zycurl_write *write;
 } php_zycurl_handlers;
 
 typedef struct {
-    CURLcode    no;
-    char        str[CURL_ERROR_SIZE];
+	CURLcode    no;
+	char        str[CURL_ERROR_SIZE];
 } php_zycurl_error;
 
 typedef struct {
-    HashTable *slist;
+	HashTable *slist;
 } php_zycurl_free;
 
 typedef struct {
-    CURL                *curl;
-    zend_bool           is_recycle;
-    php_zycurl_error    err;
-    php_zycurl_handlers *handlers;
-    php_zycurl_free     *to_free;
+	CURL                *curl;
+	zend_bool           is_recycle;
+	php_zycurl_error    err;
+	php_zycurl_handlers *handlers;
+	php_zycurl_free     *to_free;
 } php_zycurl;
 
 #endif	/* PHP_ZYCURL_H */

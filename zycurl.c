@@ -719,14 +719,14 @@ static const zend_function_entry zycurl_functions[] = {
  */
 zend_module_entry zycurl_module_entry = {
 	STANDARD_MODULE_HEADER,
-	ZYCURL_MODULE_NAME,			/* Extension name */
-	zycurl_functions,			/* zend_function_entry */
-	PHP_MINIT(zycurl),			/* PHP_MINIT - Module initialization */
-	PHP_MSHUTDOWN(zycurl),		/* PHP_MSHUTDOWN - Module shutdown */
-	PHP_RINIT(zycurl),			/* PHP_RINIT - Request initialization */
-	PHP_RSHUTDOWN(zycurl),		/* PHP_RSHUTDOWN - Request shutdown */
-	PHP_MINFO(zycurl),			/* PHP_MINFO - Module info */
-	PHP_ZYCURL_VERSION,			/* Version */
+	ZYCURL_MODULE_NAME,         /* Extension name */
+	zycurl_functions,           /* zend_function_entry */
+	PHP_MINIT(zycurl),          /* PHP_MINIT - Module initialization */
+	PHP_MSHUTDOWN(zycurl),      /* PHP_MSHUTDOWN - Module shutdown */
+	PHP_RINIT(zycurl),          /* PHP_RINIT - Request initialization */
+	PHP_RSHUTDOWN(zycurl),      /* PHP_RSHUTDOWN - Request shutdown */
+	PHP_MINFO(zycurl),          /* PHP_MINFO - Module info */
+	PHP_ZYCURL_VERSION,         /* Version */
 	STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
