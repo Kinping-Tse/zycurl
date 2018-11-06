@@ -478,7 +478,7 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 			zend_string_release(opt_value_str);
 			break;
 		}
-		/* Array optios */
+		/* Array options */
 		case CURLOPT_HTTPHEADER:
 		{
 			zval *current = NULL;
@@ -701,16 +701,16 @@ ZEND_END_ARG_INFO()
 /* {{{ zycurl_functions[]
  */
 static const zend_function_entry zycurl_functions[] = {
-	PHP_FE(zycurl_init, arginfo_zycurl_init)
-	PHP_FE(zycurl_setopt, arginfo_zycurl_setopt)
+	PHP_FE(zycurl_init,         arginfo_zycurl_init)
+	PHP_FE(zycurl_setopt,       arginfo_zycurl_setopt)
 	PHP_FE(zycurl_setopt_array, arginfo_zycurl_setopt_array)
-	PHP_FE(zycurl_exec, arginfo_zycurl_exec)
-	PHP_FE(zycurl_getinfo, arginfo_zycurl_getinfo)
-	PHP_FE(zycurl_close, arginfo_zycurl_close)
-	PHP_FE(zycurl_errno, arginfo_zycurl_errno)
-	PHP_FE(zycurl_error, arginfo_zycurl_error)
-	PHP_FE(zycurl_strerror, arginfo_zycurl_strerror)
-	PHP_FE(zycurl_reset, arginfo_zycurl_reset)
+	PHP_FE(zycurl_exec,         arginfo_zycurl_exec)
+	PHP_FE(zycurl_getinfo,      arginfo_zycurl_getinfo)
+	PHP_FE(zycurl_close,        arginfo_zycurl_close)
+	PHP_FE(zycurl_errno,        arginfo_zycurl_errno)
+	PHP_FE(zycurl_error,        arginfo_zycurl_error)
+	PHP_FE(zycurl_strerror,     arginfo_zycurl_strerror)
+	PHP_FE(zycurl_reset,        arginfo_zycurl_reset)
 	PHP_FE_END
 };
 /* }}} */

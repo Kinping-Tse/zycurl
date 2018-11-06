@@ -32,7 +32,8 @@ ZEND_TSRMLS_CACHE_EXTERN()
 
 /* Fixed ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO macro */
 #if PHP_VERSION_ID < 70200
-# define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null) \ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, NULL, allow_null)
+# define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, allow_null) \
+	ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(name, type, NULL, allow_null)
 # define ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
 	ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, NULL, allow_null)
 #else
