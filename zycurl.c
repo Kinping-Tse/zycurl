@@ -16,6 +16,7 @@ static int max_persistent_count = 0;
 static int res_type_curl_easy = 0;
 static const char* res_type_name_curl_easy = "zycurl";
 
+/* {{{ Inner function declare */
 ZYCURL_IFD(curl_init, php_zycurl*)(zend_string* url);
 ZYCURL_IFD(curl_close, void)(php_zycurl* pc);
 ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value);
@@ -31,6 +32,7 @@ ZYCURL_IFD(free_zycurl, void)(php_zycurl* pc);
 ZYCURL_IFD(cleanup_zycurl, void)(php_zycurl* pc);
 ZYCURL_IFD(curl_cb_write, size_t)(char *ptr, size_t size, size_t nmemb, void *userdata);
 ZYCURL_IFD(curl_cb_write_none, size_t)(char *ptr, size_t size, size_t nmemb, void *userdata);
+/* }}} */
 
 /* {{{ resource zycurl_init( [ string url ] )
  */
@@ -151,7 +153,7 @@ PHP_FUNCTION(zycurl_exec)
 
 	RETURN_STR_COPY(pc->handlers->write->buf.s);
 }
-
+/* }}} */
 
 /* {{{ mixed zycurl_getinfo( resource res [, int option ])
  */
@@ -331,10 +333,13 @@ PHP_FUNCTION(zycurl_reset)
 }
 /* }}} */
 
+/* {{{ curl_free_slist */
 ZYCURL_DTOR_FUNC_D(curl_free_slist) {
 	curl_slist_free_all(Z_PTR_P(pDest));
 }
+/* }}} */
 
+/* {{{ curl_dtor */
 static ZEND_RSRC_DTOR_FUNC(ZYCURL_IFN(curl_dtor))
 {
 	zval zres;
@@ -344,7 +349,9 @@ static ZEND_RSRC_DTOR_FUNC(ZYCURL_IFN(curl_dtor))
 
 	ZYCURL_IFN(curl_close)(pc);
 }
+/* }}} */
 
+/* {{{ curl_init */
 ZYCURL_IFD(curl_init, php_zycurl*)(zend_string* url)
 {
 	/* Build persistent pool key by host and port */
@@ -403,7 +410,9 @@ ZYCURL_IFD(curl_init, php_zycurl*)(zend_string* url)
 
 	return pc;
 }
+/* }}} */
 
+/* {{{ curl_close */
 ZYCURL_IFD(curl_close, void)(php_zycurl* pc)
 {
 	CURL *curl = pc->curl;
@@ -421,7 +430,9 @@ ZYCURL_IFD(curl_close, void)(php_zycurl* pc)
 		ZYCURL_IFN(free_zycurl)(pc);
 	}
 }
+/* }}} */
 
+/* {{{ pr_error */
 ZYCURL_IFD(pr_error, void)(char *errmsg, ...)
 {
 	int level = E_WARNING;
@@ -436,7 +447,9 @@ ZYCURL_IFD(pr_error, void)(char *errmsg, ...)
 
 	php_error_docref(NULL, level, errmsg);
 }
+/* }}} */
 
+/* {{{ curl_setopt */
 ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value)
 {
 	CURL* curl = pc->curl;
@@ -520,14 +533,18 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 
 	return SUCCESS;
 }
+/* }}} */
 
-/* Get php_zycurl from zval */
+/* {{{ get_php_curl
+   Get php_zycurl from zval */
 ZYCURL_IFD(get_php_curl, ZYCURL_INLINE php_zycurl*)(zval *res)
 {
 	return zend_fetch_resource(Z_RES_P(res), res_type_name_curl_easy, res_type_curl_easy);
 }
+/* }}} */
 
-/* malloc php_zycurl  */
+/* {{{ new_zycurl
+   Malloc php_zycurl  */
 ZYCURL_IFD(new_zycurl, php_zycurl*)()
 {
 	php_zycurl *pc = pecalloc(1, sizeof(php_zycurl), ZYCURL_P);
@@ -537,8 +554,10 @@ ZYCURL_IFD(new_zycurl, php_zycurl*)()
 
 	return pc;
 }
+/* }}} */
 
-/* free php_zycurl  */
+/* {{{ free_zycurl
+   Free php_zycurl  */
 ZYCURL_IFD(free_zycurl, void)(php_zycurl* pc)
 {
 	smart_str_free(&pc->handlers->write->buf);
@@ -549,16 +568,20 @@ ZYCURL_IFD(free_zycurl, void)(php_zycurl* pc)
 
 	pefree(pc, ZYCURL_P);
 }
+/* }}} */
 
-/* cleanup php_zycurl execution state */
+/* {{{ cleanup_zycurl
+   Cleanup php_zycurl execution state */
 ZYCURL_IFD(cleanup_zycurl, void)(php_zycurl* pc)
 {
 	smart_str_free(&pc->handlers->write->buf);
 	bzero(pc->err.str, CURL_ERROR_SIZE);
 	pc->err.no = CURLE_OK;
 }
+/* }}} */
 
-/* curl write callback */
+/* {{{ curl_cb_write
+   curl write callback */
 ZYCURL_IFD(curl_cb_write, size_t)(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
 	size_t len = size * nmemb;
@@ -571,16 +594,21 @@ ZYCURL_IFD(curl_cb_write, size_t)(char *ptr, size_t size, size_t nmemb, void *us
 
 	return len;
 }
+/* }}} */
 
-/* curl write callback with nothing */
+/* {{{ curl_cb_write_none
+   curl write callback with nothing */
 ZYCURL_IFD(curl_cb_write_none, size_t)(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
 	return size * nmemb;
 }
+/* }}} */
 
+/* {{{ PHP_INI */
 PHP_INI_BEGIN()
 PHP_INI_ENTRY("zycurl.max_persistent_count", "100", PHP_INI_SYSTEM, NULL)
 PHP_INI_END()
+/* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
  */
