@@ -51,6 +51,16 @@ PHP_FUNCTION(zycurl_init)
 		RETURN_FALSE;
 	}
 
+	if (url) {
+		zval zurl;
+		ZVAL_STR(&zurl, url);
+
+		if (ZYCURL_IFN(curl_setopt)(pc, CURLOPT_URL, &zurl) == FAILURE) {
+			ZYCURL_IFN(curl_close)(pc);
+			RETURN_FALSE;
+		}
+	}
+
 	RETURN_RES(zend_register_resource(pc, res_type_curl_easy));
 }
 /* }}} */
@@ -149,9 +159,13 @@ PHP_FUNCTION(zycurl_exec)
 		RETURN_FALSE;
 	}
 
-	smart_str_0(&pc->handlers->write->buf);
+	if (pc->handlers->write->buf.s) {
+		smart_str_0(&pc->handlers->write->buf);
+		RETURN_STR_COPY(pc->handlers->write->buf.s);
+	} else {
+		RETURN_EMPTY_STRING();
+	}
 
-	RETURN_STR_COPY(pc->handlers->write->buf.s);
 }
 /* }}} */
 
@@ -449,6 +463,8 @@ ZYCURL_IFD(pr_error, void)(char *errmsg, ...)
 }
 /* }}} */
 
+#define CURLOPT_RETURNTRANSFER 19913
+
 /* {{{ curl_setopt */
 ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value)
 {
@@ -456,16 +472,23 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 	CURLcode err_code = CURLE_OK;
 
 	switch (opt_name) {
+		/* Do nothing now, just for compatibility */
+		case CURLOPT_RETURNTRANSFER:
+			break;
 		/* Long options */
+		case CURLOPT_HEADER:
+		case CURLOPT_FAILONERROR:
 		case CURLOPT_LOCALPORT:
 		case CURLOPT_LOCALPORTRANGE:
 		case CURLOPT_TIMEOUT:
 		case CURLOPT_TIMEVALUE:
 		case CURLOPT_TIMEOUT_MS:
+		case CURLOPT_NOPROGRESS:
 		case CURLOPT_NOSIGNAL:
 		case CURLOPT_SSLVERSION:
 		case CURLOPT_SSL_VERIFYPEER:
 		case CURLOPT_SSL_VERIFYHOST:
+		case CURLOPT_VERBOSE:
 		{
 			zend_long opt_value_long = zval_get_long(opt_value);
 			err_code = curl_easy_setopt(curl, opt_name, opt_value_long);
