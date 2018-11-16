@@ -480,14 +480,19 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 		case CURLOPT_FAILONERROR:
 		case CURLOPT_LOCALPORT:
 		case CURLOPT_LOCALPORTRANGE:
-		case CURLOPT_TIMEOUT:
-		case CURLOPT_TIMEVALUE:
-		case CURLOPT_TIMEOUT_MS:
 		case CURLOPT_NOPROGRESS:
 		case CURLOPT_NOSIGNAL:
+		case CURLOPT_PORT:
+		case CURLOPT_POST:
+		case CURLOPT_PROXYPORT:
+		case CURLOPT_PROXYTYPE:
+		case CURLOPT_PUT:
 		case CURLOPT_SSLVERSION:
 		case CURLOPT_SSL_VERIFYPEER:
 		case CURLOPT_SSL_VERIFYHOST:
+		case CURLOPT_TIMEOUT:
+		case CURLOPT_TIMEVALUE:
+		case CURLOPT_TIMEOUT_MS:
 		case CURLOPT_VERBOSE:
 		{
 			zend_long opt_value_long = zval_get_long(opt_value);
@@ -544,6 +549,16 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 			err_code = curl_easy_setopt(curl, opt_name, slist);
 			break;
 		}
+		case CURLOPT_POSTFIELDS:
+			if (Z_TYPE_P(opt_value) != IS_STRING) {
+				ZYCURL_IFN(pr_error)("CURLOPT_POSTFIELDS must be string, don't support other type now!", NULL);
+				return FAILURE;
+			}
+			zend_string *opt_value_str = zval_get_string(opt_value);
+			err_code = curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, ZSTR_LEN(opt_value_str));
+			err_code = curl_easy_setopt(curl, CURLOPT_COPYPOSTFIELDS, ZSTR_VAL(opt_value_str));
+			zend_string_release(opt_value_str);
+			break;
 		default:
 			ZYCURL_IFN(pr_error)("Unsupported curl configuration option", NULL);
 			return FAILURE;
