@@ -6,7 +6,7 @@
 extern zend_module_entry zycurl_module_entry;
 # define phpext_zycurl_ptr &zycurl_module_entry
 
-# define PHP_ZYCURL_VERSION "0.1.2"
+# define PHP_ZYCURL_VERSION "0.1.3"
 
 # if defined(ZTS) && defined(COMPILE_DL_ZYCURL)
 ZEND_TSRMLS_CACHE_EXTERN()

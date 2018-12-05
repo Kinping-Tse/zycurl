@@ -81,7 +81,6 @@ PHP_FUNCTION(zycurl_setopt)
 
 	php_zycurl *pc;
 	if ((pc = ZYCURL_IFN(get_php_curl)(res)) == NULL) {
-		ZYCURL_IFN(pr_error("Invalid curl resource", NULL));
 		RETURN_FALSE;
 	}
 
@@ -146,7 +145,6 @@ PHP_FUNCTION(zycurl_exec)
 
 	php_zycurl *pc = NULL;
 	if ((pc = ZYCURL_IFN(get_php_curl)(res)) == NULL) {
-		ZYCURL_IFN(pr_error)("Invalid curl resource", NULL);
 		RETURN_FALSE;
 	}
 
@@ -480,6 +478,7 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 		case CURLOPT_FAILONERROR:
 		case CURLOPT_LOCALPORT:
 		case CURLOPT_LOCALPORTRANGE:
+		case CURLOPT_NOBODY:
 		case CURLOPT_NOPROGRESS:
 		case CURLOPT_NOSIGNAL:
 		case CURLOPT_PORT:
@@ -719,7 +718,7 @@ PHP_MINFO_FUNCTION(zycurl)
 
 /* {{{ arginfo
  */
-ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_zycurl_init, 0, 0, IS_RESOURCE, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_zycurl_init, 0, 0, 0)
 	ZEND_ARG_TYPE_INFO(0, url, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
@@ -734,7 +733,7 @@ ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(arginfo_zycurl_setopt_array, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, options, IS_ARRAY, 0)
 ZEND_END_ARG_INFO()
 
-ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(arginfo_zycurl_exec, IS_STRING, 0)
+ZEND_BEGIN_ARG_INFO(arginfo_zycurl_exec, 0)
 	ZEND_ARG_TYPE_INFO(0, res, IS_RESOURCE, 0)
 ZEND_END_ARG_INFO()
 
@@ -747,11 +746,11 @@ ZEND_BEGIN_ARG_INFO(arginfo_zycurl_close, 0)
 	ZEND_ARG_TYPE_INFO(0, res, IS_RESOURCE, 0)
 ZEND_END_ARG_INFO()
 
-ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(arginfo_zycurl_errno, IS_LONG, 0)
+ZEND_BEGIN_ARG_INFO(arginfo_zycurl_errno, 0)
 	ZEND_ARG_TYPE_INFO(0, res, IS_RESOURCE, 0)
 ZEND_END_ARG_INFO()
 
-ZYCURL_BEGIN_ARG_WITH_RETURN_TYPE_INFO(arginfo_zycurl_error, IS_STRING, 0)
+ZEND_BEGIN_ARG_INFO(arginfo_zycurl_error, 0)
 	ZEND_ARG_TYPE_INFO(0, res, IS_RESOURCE, 0)
 ZEND_END_ARG_INFO()
 
