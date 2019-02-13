@@ -14,22 +14,22 @@ static HashTable php_zycurl_pool;
 static int max_persistent_count = 0;
 
 static int res_type_curl_easy = 0;
-static const char* res_type_name_curl_easy = "zycurl";
+static const char *res_type_name_curl_easy = "zycurl";
 
 /* {{{ Inner function declare */
-ZYCURL_IFD(curl_init, php_zycurl*)(zend_string* url);
-ZYCURL_IFD(curl_close, void)(php_zycurl* pc);
+ZYCURL_IFD(curl_init, php_zycurl *)(zend_string *url);
+ZYCURL_IFD(curl_close, void)(php_zycurl *pc);
 ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value);
 
 ZYCURL_IFD(pr_error, void)(char *errmsg, ...);
-ZYCURL_IFD(get_php_curl, php_zycurl*)(zval *res);
+ZYCURL_IFD(get_php_curl, php_zycurl *)(zval *res);
 
 ZYCURL_DTOR_FUNC_D(curl_free_slist);
 static ZEND_RSRC_DTOR_FUNC(ZYCURL_IFN(curl_dtor));
 
-ZYCURL_IFD(new_zycurl, php_zycurl*)();
-ZYCURL_IFD(free_zycurl, void)(php_zycurl* pc);
-ZYCURL_IFD(cleanup_zycurl, void)(php_zycurl* pc);
+ZYCURL_IFD(new_zycurl, php_zycurl *)();
+ZYCURL_IFD(free_zycurl, void)(php_zycurl *pc);
+ZYCURL_IFD(cleanup_zycurl, void)(php_zycurl *pc);
 ZYCURL_IFD(curl_cb_write, size_t)(char *ptr, size_t size, size_t nmemb, void *userdata);
 ZYCURL_IFD(curl_cb_write_none, size_t)(char *ptr, size_t size, size_t nmemb, void *userdata);
 /* }}} */
@@ -45,7 +45,7 @@ PHP_FUNCTION(zycurl_init)
 		Z_PARAM_STR(url)
 	ZEND_PARSE_PARAMETERS_END();
 
-	php_zycurl* pc = ZYCURL_IFN(curl_init)(url);
+	php_zycurl *pc = ZYCURL_IFN(curl_init)(url);
 	if (!pc) {
 		ZYCURL_IFN(pr_error)("Could not initialize a new ZYcURL handle", NULL);
 		RETURN_FALSE;
@@ -69,7 +69,7 @@ PHP_FUNCTION(zycurl_init)
  */
 PHP_FUNCTION(zycurl_setopt)
 {
-	zval* res = NULL;
+	zval *res = NULL;
 	zend_long opt_name = 0;
 	zval *opt_value = NULL;
 
@@ -137,7 +137,7 @@ PHP_FUNCTION(zycurl_setopt_array)
  */
 PHP_FUNCTION(zycurl_exec)
 {
-	zval* res = NULL;
+	zval *res = NULL;
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_RESOURCE(res)
@@ -171,7 +171,7 @@ PHP_FUNCTION(zycurl_exec)
  */
 PHP_FUNCTION(zycurl_getinfo)
 {
-	zval* res = NULL;
+	zval *res = NULL;
 	zend_long option = 0;
 
 	ZEND_PARSE_PARAMETERS_START(1, 2)
@@ -249,7 +249,7 @@ PHP_FUNCTION(zycurl_getinfo)
  */
 PHP_FUNCTION(zycurl_close)
 {
-	zval* res = NULL;
+	zval *res = NULL;
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_RESOURCE(res)
@@ -272,7 +272,7 @@ PHP_FUNCTION(zycurl_close)
  */
 PHP_FUNCTION(zycurl_errno)
 {
-	zval* res = NULL;
+	zval *res = NULL;
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_RESOURCE(res)
@@ -291,7 +291,7 @@ PHP_FUNCTION(zycurl_errno)
  */
 PHP_FUNCTION(zycurl_error)
 {
-	zval* res = NULL;
+	zval *res = NULL;
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_RESOURCE(res)
@@ -330,7 +330,7 @@ PHP_FUNCTION(zycurl_strerror)
  */
 PHP_FUNCTION(zycurl_reset)
 {
-	zval* res = NULL;
+	zval *res = NULL;
 	php_zycurl *pc = NULL;
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
@@ -364,11 +364,11 @@ static ZEND_RSRC_DTOR_FUNC(ZYCURL_IFN(curl_dtor))
 /* }}} */
 
 /* {{{ curl_init */
-ZYCURL_IFD(curl_init, php_zycurl*)(zend_string* url)
+ZYCURL_IFD(curl_init, php_zycurl *)(zend_string *url)
 {
 	/* Build persistent pool key by host and port */
 	php_url *url_info = NULL;
-	zend_string* php_zycurl_pool_key = NULL;
+	zend_string *php_zycurl_pool_key = NULL;
 
 	if (!url) {
 		char *tmp_url = "http://xxx.xjp.xxx.com";
@@ -425,7 +425,7 @@ ZYCURL_IFD(curl_init, php_zycurl*)(zend_string* url)
 /* }}} */
 
 /* {{{ curl_close */
-ZYCURL_IFD(curl_close, void)(php_zycurl* pc)
+ZYCURL_IFD(curl_close, void)(php_zycurl *pc)
 {
 	CURL *curl = pc->curl;
 
@@ -466,7 +466,7 @@ ZYCURL_IFD(pr_error, void)(char *errmsg, ...)
 /* {{{ curl_setopt */
 ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value)
 {
-	CURL* curl = pc->curl;
+	CURL *curl = pc->curl;
 	CURLcode err_code = CURLE_OK;
 
 	switch (opt_name) {
@@ -524,7 +524,7 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 			zval *current = NULL;
 			struct curl_slist *slist = NULL;
 			zend_string *val = NULL;
-			HashTable* ph = HASH_OF(opt_value);
+			HashTable *ph = HASH_OF(opt_value);
 
 			if (!ph) {
 				ZYCURL_IFN(pr_error)("You must pass an array as argument", NULL);
@@ -574,7 +574,7 @@ ZYCURL_IFD(curl_setopt, int)(php_zycurl *pc, zend_long opt_name, zval *opt_value
 
 /* {{{ get_php_curl
    Get php_zycurl from zval */
-ZYCURL_IFD(get_php_curl, ZYCURL_INLINE php_zycurl*)(zval *res)
+ZYCURL_IFD(get_php_curl, ZYCURL_INLINE php_zycurl *)(zval *res)
 {
 	return zend_fetch_resource(Z_RES_P(res), res_type_name_curl_easy, res_type_curl_easy);
 }
@@ -582,7 +582,7 @@ ZYCURL_IFD(get_php_curl, ZYCURL_INLINE php_zycurl*)(zval *res)
 
 /* {{{ new_zycurl
    Malloc php_zycurl  */
-ZYCURL_IFD(new_zycurl, php_zycurl*)()
+ZYCURL_IFD(new_zycurl, php_zycurl *)()
 {
 	php_zycurl *pc = pecalloc(1, sizeof(php_zycurl), ZYCURL_P);
 	pc->to_free = pecalloc(1, sizeof(php_zycurl_free), ZYCURL_P);
@@ -595,7 +595,7 @@ ZYCURL_IFD(new_zycurl, php_zycurl*)()
 
 /* {{{ free_zycurl
    Free php_zycurl  */
-ZYCURL_IFD(free_zycurl, void)(php_zycurl* pc)
+ZYCURL_IFD(free_zycurl, void)(php_zycurl *pc)
 {
 	smart_str_free(&pc->handlers->write->buf);
 	pefree(pc->handlers->write, ZYCURL_P);
@@ -609,7 +609,7 @@ ZYCURL_IFD(free_zycurl, void)(php_zycurl* pc)
 
 /* {{{ cleanup_zycurl
    Cleanup php_zycurl execution state */
-ZYCURL_IFD(cleanup_zycurl, void)(php_zycurl* pc)
+ZYCURL_IFD(cleanup_zycurl, void)(php_zycurl *pc)
 {
 	smart_str_free(&pc->handlers->write->buf);
 	bzero(pc->err.str, CURL_ERROR_SIZE);
